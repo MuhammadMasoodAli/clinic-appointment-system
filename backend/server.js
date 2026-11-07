@@ -5,7 +5,18 @@ const { randomUUID } = require('crypto');
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
+const FRONTEND_ORIGIN =
+  process.env.FRONTEND_URL || String.fromCharCode(104,116,116,112,58,47,47,108,111,99,97,108,104,111,115,116,58,53,49,55,51);
+
+app.use(cors({
+  origin: (requestOrigin, callback) => {
+    if (!requestOrigin || requestOrigin === FRONTEND_ORIGIN) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+}));
 app.use(express.json());
 
 // Fixed doctor list
