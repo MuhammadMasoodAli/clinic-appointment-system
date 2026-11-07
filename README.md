@@ -44,7 +44,7 @@ A clinic appointment booking application built with React and Node.js.
 
 Clone the repository:
 
-    git clone YOUR_GITHUB_REPOSITORY_URL
+    git clone https://github.com/MuhammadMasoodAli/clinic-appointment-system.git
     cd clinic-appointment-system
 
 ### Start Backend
