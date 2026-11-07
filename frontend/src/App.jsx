@@ -247,7 +247,6 @@ function App() {
         <div className="hero-icon">✚</div>
       </section>
 
-      {error && <div className="alert alert-error">{error}</div>}
       {message && <div className="alert alert-success">{message}</div>}
 
       <section className="content-grid">
@@ -348,9 +347,11 @@ function App() {
                 required
               >
                 <option value="">Select a time slot</option>
+                {/* Show occupied slots so users can select them and receive a backend error. */}
                 {availableSlots.map((slot) => (
-                  <option key={slot} value={slot}>
-                    {formatTime(slot)}
+                  <option key={slot.startTime} value={slot.startTime}>
+                    {formatTime(slot.startTime)}
+                    {!slot.available && ' — Already booked'}
                   </option>
                 ))}
               </select>
@@ -391,6 +392,9 @@ function App() {
             >
               {booking ? 'Booking...' : 'Confirm appointment'}
             </button>
+
+            {/* Display booking errors directly below the submit button. */}
+            {error && <div className="alert alert-error">{error}</div>}
           </form>
         </div>
 

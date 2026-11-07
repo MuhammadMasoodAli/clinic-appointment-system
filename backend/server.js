@@ -217,9 +217,11 @@ app.get('/api/appointments/available-slots', (req, res) => {
       continue;
     }
 
-    if (!hasOverlap(doctor, date, startTime, 30)) {
-      slots.push(startTime);
-    }
+    // Return all slots and indicate whether each one is available.
+    slots.push({
+      startTime,
+      available: !hasOverlap(doctor, date, startTime, 30),
+    });
   }
 
   res.json(slots);
@@ -246,10 +248,24 @@ app.post('/api/appointments', (req, res) => {
   if (
     hasOverlap(doctorId, date, startTime, Number(duration))
   ) {
+    // Include the doctor, selected time, and date in the conflict error.
+    const doctorName = findDoctor(doctorId).name;
+    const formattedTime = new Date(
+      `2000-01-01T${startTime}:00`
+    ).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+    const formattedDate = new Date(`${date}T12:00:00`).toLocaleDateString(
+      'en-US',
+      { month: 'long', day: 'numeric', year: 'numeric' }
+    );
+
     return sendError(
       res,
       400,
-      'This doctor already has an appointment during the selected time.'
+      `${doctorName} already has an appointment at ${formattedTime} on ${formattedDate}. Please select another time slot.`
     );
   }
 
