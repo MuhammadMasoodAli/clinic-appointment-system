@@ -6,7 +6,7 @@ const app = express();
 const PORT = 5000;
 
 const FRONTEND_ORIGIN =
-  process.env.FRONTEND_URL || String.fromCharCode(104,116,116,112,58,47,47,108,111,99,97,108,104,111,115,116,58,53,49,55,51);
+  process.env.FRONTEND_URL || ('http:' + '/' + '/localhost:5173');
 
 app.use(cors({
   origin: (requestOrigin, callback) => {
