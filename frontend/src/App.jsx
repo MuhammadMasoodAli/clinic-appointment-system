@@ -28,6 +28,7 @@ function App() {
   const [appointments, setAppointments] = useState([]);
   const [form, setForm] = useState(initialForm);
   const [availableSlots, setAvailableSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
@@ -70,11 +71,13 @@ function App() {
       if (!form.doctorId || !form.date) {
         setAvailableSlots([]);
         setSlotError('');
+        setLoadingSlots(false);
         return;
       }
 
       setAvailableSlots([]);
       setSlotError('');
+      setLoadingSlots(true);
       setForm((current) => ({ ...current, startTime: '' }));
 
       try {
@@ -93,6 +96,8 @@ function App() {
         setSlotError(
           err.response?.data?.error || 'Could not load available time slots.'
         );
+      } finally {
+        setLoadingSlots(false);
       }
     };
 
@@ -330,7 +335,7 @@ function App() {
                 name="startTime"
                 value={form.startTime}
                 onChange={updateForm}
-                disabled={!form.doctorId || availableSlots.length === 0}
+                disabled={loadingSlots || !form.doctorId || availableSlots.length === 0}
                 required
               >
                 <option value="">Select a time slot</option>
@@ -341,8 +346,9 @@ function App() {
                 ))}
               </select>
 
+              {loadingSlots && <small>Loading available slots...</small>}
               {slotError && <small className="field-error">{slotError}</small>}
-              {!slotError &&
+              {!loadingSlots && !slotError &&
                 form.doctorId &&
                 availableSlots.length === 0 && (
                   <small>No available slots for this date.</small>
