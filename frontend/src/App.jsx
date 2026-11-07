@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
+// API configuration
 const API_URL = import.meta.env.VITE_API_URL;
 
 const today = () => {
@@ -13,6 +14,7 @@ const today = () => {
   return `${year}-${month}-${day}`;
 };
 
+// Initial form values
 const initialForm = {
   doctorId: '',
   patientName: '',
@@ -23,6 +25,7 @@ const initialForm = {
   reason: '',
 };
 
+// Main App component
 function App() {
   const [doctors, setDoctors] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -36,6 +39,7 @@ function App() {
   const [error, setError] = useState('');
   const [slotError, setSlotError] = useState('');
 
+// Appointment data
   const loadAppointments = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/appointments`);
@@ -45,6 +49,7 @@ function App() {
     }
   }, []);
 
+// Load initial data
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -66,6 +71,7 @@ function App() {
     loadInitialData();
   }, []);
 
+  // Load available slots
   useEffect(() => {
     const loadSlots = async () => {
       if (!form.doctorId || !form.date) {
@@ -104,6 +110,7 @@ function App() {
     loadSlots();
   }, [form.doctorId, form.date]);
 
+// Appointment actions
   const updateForm = (event) => {
     const { name, value } = event.target;
 
@@ -193,6 +200,7 @@ function App() {
     }
   };
 
+// Filter and format appointments
   const filteredAppointments = appointments.filter((appointment) => {
     return filter === 'All' || appointment.status === filter;
   });
@@ -213,6 +221,7 @@ function App() {
     return `${displayHour}:${String(minutes).padStart(2, '0')} ${period}`;
   };
 
+// Render UI
   if (loading) {
     return <div className="loading-screen">Loading appointment system...</div>;
   }
